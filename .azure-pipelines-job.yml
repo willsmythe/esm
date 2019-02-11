@@ -1,0 +1,48 @@
+jobs:
+- job: ${{ parameters.NAME }}
+  pool: 
+    vmImage: ${{ parameters.VMIMAGE }}
+  variables:
+    CI: true
+  strategy:
+    matrix:
+      node6:
+        NODE_VERSION: 6.2.0
+        NPM_INSTALL: true
+        TEST_PROD: true        
+      node8:
+        NODE_VERSION: 8.x
+        NPM_INSTALL: true
+      node10:
+        NODE_VERSION: 10.x
+      node11:
+        NODE_VERSION: 11.x        
+      node11_harmony:
+        NODE_VERSION: 11.x
+        HARMONY: true
+
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(NODE_VERSION)
+    displayName: 'Install Node.js $(NODE_VERSION)'
+
+  - script: npm ci
+    condition: not(variables.NPM_INSTALL)
+    displayName: 'Install dependencies (npm ci)'
+
+  - script: npm install
+    condition: variables.NPM_INSTALL
+    displayName: 'Install dependencies (npm install)'
+
+  - script: npm test
+    condition: not(variables.TEST_PROD)
+    env:
+      CI: true
+    displayName: 'Run tests'
+
+  - script: npm run test:prod
+    condition: variables.TEST_PROD
+    env:
+      CI: true
+    displayName: 'Run tests (prod)'
