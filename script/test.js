@@ -133,7 +133,7 @@ Promise
   .all([
     argv.prod && cleanJS(),
     setupRepo(),
-    setupNode(),
+    //setupNode(),
     setupTest262()
   ])
   .then(() => runTests())
