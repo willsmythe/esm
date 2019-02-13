@@ -5,6 +5,7 @@ jobs:
   variables:
     CI: true
   strategy:
+    maxParallel: 3
     matrix:
       node6:
         NODE_VERSION: 6.2.0
@@ -37,12 +38,8 @@ jobs:
 
   - script: npm test
     condition: not(variables.TEST_PROD)
-    env:
-      CI: true
     displayName: 'Run tests'
 
   - script: npm run test:prod
     condition: variables.TEST_PROD
-    env:
-      CI: true
     displayName: 'Run tests (prod)'
