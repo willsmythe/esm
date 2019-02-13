@@ -6,18 +6,18 @@ import fs from "fs-extra"
 import path from "path"
 import trash from "../script/trash.js"
 
-const isTravis = Reflect.has(process.env, "TRAVIS")
+const isCI = Reflect.has(process.env, "TRAVIS") || Reflect.has(process.env, "TF_BUILD") // TODO: Discuss
 const isWin = process.platform === "win32"
 
 const canTestLab = SemVer.satisfies(process.version, ">=7.6")
-const canTestPM2 = ! isTravis
+const canTestPM2 = ! isCI
 
 const avaPath = path.resolve("../node_modules/ava/cli.js")
 const jasminePath = path.resolve("../node_modules/jasmine/bin/jasmine.js")
 const jestPath = path.resolve("../node_modules/jest/bin/jest.js")
 const labPath = path.resolve("../node_modules/lab/bin/lab")
 const pkgPath = path.resolve("../index.js")
-const nodePath = path.resolve("env/prefix", isWin ? "node.exe" : "bin/node")
+const nodePath = process.execPath; // TODO: Discuss why using linked env/prefix node. path.resolve("env/prefix", isWin ? "node.exe" : "bin/node")
 const testPath = path.resolve(".")
 
 const defaultNodeArgs = [

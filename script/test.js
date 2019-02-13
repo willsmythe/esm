@@ -23,7 +23,7 @@ const esmPath = path.resolve(rootPath, "esm.js")
 const fixturePath = path.resolve(testPath, "fixture")
 const indexPath = path.resolve(rootPath, "index.js")
 const mochaPath = path.resolve(rootPath, "node_modules/mocha/bin/_mocha")
-const nodePath = path.resolve(envPath, "prefix", isWin ? "node.exe" : "bin/node")
+const nodePath = process.execPath; // TODO: Discuss ... path.resolve(envPath, "prefix", isWin ? "node.exe" : "bin/node")
 
 const NODE_ENV = argv.prod ? "production" : "development"
 const ESM_ENV = NODE_ENV + "-test"
@@ -110,8 +110,8 @@ function runTests(cached) {
 function setupNode() {
   const basePath = path.resolve(nodePath, isWin ? "" : "..")
 
-  return trash(basePath)
-    .then(() => fs.ensureLink(process.execPath, nodePath))
+  return trash(basePath);
+  // .then(() => fs.ensureLink(process.execPath, nodePath)) TODO: Discuss why creating a link is necessary
 }
 
 function setupRepo() {
